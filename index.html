@@ -1359,7 +1359,7 @@ function setGreeting() {
   const now = new Date();
   const h = now.getHours();
   const greet = h < 12 ? 'มอนิ่งไอ่พวกขี้เกียจ' : h < 17 ? 'บายละไมไม่เข้าเรียน' : 'เย็นละกลับบ่นได้ละอย่าแอบเที่ยว';
-  const who = currentStudent ? ' ' + currentStudent.name : (isAdmin ? ' แอดมิน' : '');
+  const who = currentStudent ? ' ' + currentStudent.name : (isAdmin ? '' : '');
   document.getElementById('greeting').textContent = greet + who;
   const days = ['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์'];
   const months = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
