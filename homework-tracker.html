@@ -1,0 +1,1229 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>งานที่ต้องส่ง</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Prompt:wght@400;600;700&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0b0e18;
+    --surface: #161b2c;
+    --card: #1d2338;
+    --border: #2c3354;
+    --accent: #7c9bff;
+    --accent2: #b18cfa;
+    --accent3: #f472b6;
+    --green: #34d399;
+    --yellow: #fbbf24;
+    --red: #f87171;
+    --text: #eef1f8;
+    --muted: #7785a3;
+    --font: 'Sarabun', sans-serif;
+    --display: 'Prompt', sans-serif;
+    --ease: cubic-bezier(.4,0,.2,1);
+  }
+
+  /* ===== Global smooth interactions ===== */
+  button, .tab, .type-btn {
+    transition: all 0.2s var(--ease);
+  }
+  button:active, .tab:active, .type-btn:active {
+    transform: scale(0.95);
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    min-height: 100vh;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* ===== LOGIN ===== */
+  #login-screen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: radial-gradient(ellipse at 50% 0%, #1a2040 0%, #0f1117 70%);
+  }
+
+  .login-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 48px 40px;
+    width: 380px;
+    text-align: center;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.5);
+  }
+
+  .login-box h1 {
+    font-family: var(--display);
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    color: var(--text);
+  }
+
+  .login-class {
+    font-family: var(--display);
+    font-size: 14px;
+    color: var(--accent);
+    font-weight: 600;
+    letter-spacing: 1px;
+    margin-bottom: 24px;
+  }
+
+  .login-field {
+    position: relative;
+    margin-bottom: 16px;
+  }
+
+  .login-field input {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 13px 16px;
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.2s;
+    text-align: center;
+    letter-spacing: 2px;
+  }
+
+  .login-field input:focus { border-color: var(--accent); }
+  .login-field input::placeholder { letter-spacing: 0; color: var(--muted); }
+
+  .login-btn {
+    width: 100%;
+    background: linear-gradient(135deg, var(--accent), var(--accent2) 60%, var(--accent3));
+    border: none;
+    border-radius: 10px;
+    padding: 14px;
+    color: white;
+    font-family: var(--display);
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s var(--ease), transform 0.15s var(--ease), box-shadow 0.25s var(--ease);
+    margin-top: 4px;
+  }
+
+  .login-btn:hover { opacity: 0.92; transform: translateY(-2px); box-shadow: 0 10px 28px -6px var(--accent2); }
+  .login-btn:active { transform: translateY(0) scale(0.97); }
+
+  .login-error {
+    color: var(--red);
+    font-size: 13px;
+    margin-top: 12px;
+    display: none;
+  }
+
+  /* ===== APP ===== */
+  #app { display: none; }
+
+  .header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-logo {
+    font-family: var(--display);
+    font-size: 17px;
+    font-weight: 700;
+    background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3), var(--accent2), var(--accent));
+    background-size: 300% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradientShift 8s ease infinite;
+  }
+
+  @keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+
+  .header-right { display: flex; align-items: center; gap: 10px; }
+
+  .sync-badge {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .admin-badge {
+    display: none;
+    background: rgba(108,142,255,0.15);
+    border: 1px solid rgba(108,142,255,0.3);
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+  }
+
+  .btn-sm {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 7px 14px;
+    color: var(--muted);
+    font-family: var(--font);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-sm:hover { border-color: var(--accent); color: var(--accent); }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent), var(--accent2) 60%, var(--accent3));
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    color: white;
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s var(--ease), box-shadow 0.25s var(--ease), transform 0.15s var(--ease);
+  }
+
+  .btn-primary:hover { opacity: 0.9; box-shadow: 0 8px 22px -6px var(--accent2); transform: translateY(-1px); }
+
+  .main {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 32px 20px;
+  }
+
+  .page-title { margin-bottom: 28px; }
+  .page-title h2 {
+    font-family: var(--display);
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .page-title p { color: var(--muted); font-size: 14px; }
+
+  /* Stats */
+  .stats-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+  }
+
+  .stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 20px;
+    flex: 1;
+    min-width: 90px;
+    transition: transform 0.25s var(--ease), border-color 0.25s var(--ease), box-shadow 0.25s var(--ease);
+  }
+
+  .stat-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--accent);
+    box-shadow: 0 10px 24px -8px rgba(0,0,0,0.4);
+  }
+
+  .stat-card .num {
+    font-family: var(--display);
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .stat-card .lbl { font-size: 12px; color: var(--muted); }
+  .num-red { color: var(--red); }
+  .num-yellow { color: var(--yellow); }
+  .num-blue { color: var(--accent); }
+
+  /* Tabs */
+  .tabs-wrap {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+  }
+
+  .tab {
+    padding: 8px 18px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: none;
+    color: var(--muted);
+    font-family: var(--font);
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .tab:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-1px); }
+  .tab.active {
+    background: linear-gradient(135deg, var(--accent), var(--accent2) 60%, var(--accent3));
+    border-color: var(--accent);
+    color: white;
+    font-weight: 600;
+    box-shadow: 0 6px 18px -6px var(--accent2);
+  }
+
+  /* Type filter */
+  .type-filter {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .type-btn {
+    padding: 6px 14px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: none;
+    color: var(--muted);
+    font-family: var(--font);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .type-btn:hover { color: var(--text); border-color: #3a4060; transform: translateY(-1px); }
+  .type-btn.active-hw { background: rgba(177,140,250,0.15); border-color: var(--accent2); color: var(--accent2); font-weight: 600; box-shadow: 0 0 16px -4px var(--accent2); }
+  .type-btn.active-class { background: rgba(52,211,153,0.15); border-color: var(--green); color: var(--green); font-weight: 600; box-shadow: 0 0 16px -4px var(--green); }
+  .type-btn.active-deadline { background: rgba(248,113,113,0.15); border-color: var(--red); color: var(--red); font-weight: 600; box-shadow: 0 0 16px -4px var(--red); }
+  .type-btn.active-all { background: rgba(124,155,255,0.15); border-color: var(--accent); color: var(--accent); font-weight: 600; box-shadow: 0 0 16px -4px var(--accent); }
+
+  /* Admin toolbar */
+  #admin-toolbar {
+    display: none;
+    margin-bottom: 20px;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  /* Assignments */
+  .assignments-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--muted);
+  }
+
+  .empty-state .e-icon { font-size: 36px; margin-bottom: 14px; color: var(--border); }
+  .empty-state h3 { font-size: 16px; color: var(--text); margin-bottom: 6px; }
+  .empty-state p { font-size: 13px; }
+
+  /* Assignment card */
+  .assignment-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease), border-color 0.25s var(--ease);
+    position: relative;
+    overflow: hidden;
+    animation: cardIn 0.4s var(--ease) both;
+    animation-delay: calc(var(--i, 0) * 40ms);
+  }
+
+  @keyframes cardIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .assignment-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    border-radius: 3px 0 0 3px;
+  }
+
+  .card-type-hw::before { background: var(--accent2); }
+  .card-type-class::before { background: var(--green); }
+  .card-type-deadline::before { background: var(--red); }
+
+  .assignment-card.overdue { opacity: 0.8; }
+  .assignment-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-3px);
+    box-shadow: 0 14px 32px -8px rgba(0,0,0,0.45);
+  }
+
+  .card-date {
+    min-width: 54px;
+    text-align: center;
+    background: var(--surface);
+    border-radius: 10px;
+    padding: 8px 6px;
+    flex-shrink: 0;
+  }
+
+  .card-date .month { font-size: 10px; font-weight: 700; text-transform: uppercase; color: var(--muted); letter-spacing: 1px; }
+  .card-date .day { font-family: var(--display); font-size: 22px; font-weight: 700; line-height: 1.1; }
+
+  .card-body { flex: 1; min-width: 0; }
+
+  .card-top {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 3px;
+    flex-wrap: wrap;
+  }
+
+  .card-subject { font-size: 11px; font-weight: 700; color: var(--accent); letter-spacing: 0.5px; text-transform: uppercase; }
+
+  .type-tag {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+
+  .tag-hw { background: rgba(167,139,250,0.15); color: var(--accent2); }
+  .tag-class { background: rgba(52,211,153,0.15); color: var(--green); }
+  .tag-deadline { background: rgba(248,113,113,0.15); color: var(--red); }
+
+  .card-title { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+  .card-desc { font-size: 13px; color: var(--muted); }
+
+  .card-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .deadline-badge {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+
+  .badge-red { background: rgba(248,113,113,0.15); color: var(--red); }
+  .badge-yellow { background: rgba(251,191,36,0.15); color: var(--yellow); }
+  .badge-green { background: rgba(52,211,153,0.15); color: var(--green); }
+
+  .card-actions { display: none; gap: 6px; }
+  .admin-mode .card-actions { display: flex; }
+
+  .btn-icon {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 5px 12px;
+    color: var(--muted);
+    font-family: var(--font);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-icon:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-icon.delete:hover { border-color: var(--red); color: var(--red); }
+
+  /* MODAL */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+    padding: 20px;
+    backdrop-filter: blur(4px);
+    opacity: 0;
+    transition: opacity 0.25s var(--ease);
+  }
+
+  .modal-overlay.open { display: flex; opacity: 1; }
+
+  .modal {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 32px;
+    width: 100%;
+    max-width: 480px;
+    box-shadow: 0 32px 80px rgba(0,0,0,0.5);
+    transform: scale(0.92) translateY(16px);
+    transition: transform 0.3s var(--ease);
+  }
+
+  .modal-overlay.open .modal { transform: scale(1) translateY(0); }
+
+  .modal h3 {
+    font-family: var(--display);
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 24px;
+  }
+
+  .form-group { margin-bottom: 16px; }
+
+  .form-group label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 11px 14px;
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus { border-color: var(--accent); }
+  .form-group select option { background: var(--surface); }
+  .form-group textarea { resize: vertical; min-height: 72px; }
+
+  .modal-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 24px;
+    justify-content: flex-end;
+  }
+
+  .btn-cancel {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 20px;
+    color: var(--muted);
+    font-family: var(--font);
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-cancel:hover { border-color: var(--red); color: var(--red); }
+
+  .btn-save {
+    background: linear-gradient(135deg, var(--accent), var(--accent2) 60%, var(--accent3));
+    border: none;
+    border-radius: 10px;
+    padding: 10px 24px;
+    color: white;
+    font-family: var(--font);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s var(--ease), box-shadow 0.25s var(--ease), transform 0.15s var(--ease);
+  }
+
+  .btn-save:hover { opacity: 0.9; box-shadow: 0 8px 22px -6px var(--accent2); transform: translateY(-1px); }
+
+  /* Subject chips */
+  .subject-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .subject-chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 5px 12px;
+    font-size: 13px;
+  }
+
+  .subject-chip button {
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 1;
+    padding: 0;
+    transition: color 0.2s;
+  }
+
+  .subject-chip button:hover { color: var(--red); }
+
+  .add-subject-row { display: flex; gap: 8px; }
+
+  .add-subject-row input {
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 9px 12px;
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 14px;
+    outline: none;
+  }
+
+  .add-subject-row input:focus { border-color: var(--accent); }
+
+  .add-subject-row button {
+    background: var(--accent);
+    border: none;
+    border-radius: 8px;
+    padding: 9px 16px;
+    color: white;
+    font-family: var(--font);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  #confirm-modal .modal { max-width: 340px; text-align: center; }
+  #confirm-modal p { color: var(--muted); font-size: 14px; margin: -12px 0 20px; }
+  #confirm-modal .modal-actions { justify-content: center; }
+
+  /* ===== Toast ===== */
+  .toast-container {
+    position: fixed;
+    bottom: 24px;
+    left: 24px;
+    right: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+    z-index: 999;
+    pointer-events: none;
+  }
+
+  .toast {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: 10px;
+    padding: 12px 18px;
+    font-size: 13px;
+    color: var(--text);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.45);
+    max-width: 320px;
+    animation: toastIn 0.3s var(--ease), toastOut 0.3s var(--ease) 2.7s forwards;
+  }
+
+  .toast.success { border-left-color: var(--green); }
+  .toast.error { border-left-color: var(--red); }
+
+  @keyframes toastIn {
+    from { opacity: 0; transform: translateY(12px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  @keyframes toastOut {
+    to { opacity: 0; transform: translateY(12px) scale(0.95); }
+  }
+
+  @media (max-width: 600px) {
+    .assignment-card { flex-wrap: wrap; }
+    .card-meta { flex-direction: row; align-items: center; }
+    .modal { padding: 24px 18px; }
+    .login-box { width: 90%; padding: 36px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <h1>งานที่ต้องส่ง</h1>
+    <div class="login-class">6/2 Leamsing</div>
+    <div class="login-field">
+      <input type="password" id="login-input" placeholder="รหัสผ่าน" autocomplete="off">
+    </div>
+    <button class="login-btn" onclick="doLogin()">เข้าสู่ระบบ</button>
+    <div class="login-error" id="login-error">รหัสผ่านไม่ถูกต้อง ลองใหม่อีกครั้ง</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div class="header">
+    <div class="header-logo">งานที่ต้องส่ง — 6/2 Leamsing</div>
+    <div class="header-right">
+      <span class="sync-badge" id="sync-badge">🔄 กำลังเชื่อมต่อ...</span>
+      <span class="admin-badge" id="admin-badge">แอดมิน</span>
+      <button class="btn-sm" id="admin-toggle-btn" onclick="toggleAdminMode()">เข้าโหมดแอดมิน</button>
+      <button class="btn-sm" onclick="logout()">ออก</button>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="page-title">
+      <h2 id="greeting">สวัสดี</h2>
+      <p id="date-display"></p>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="num num-red" id="stat-overdue">0</div>
+        <div class="lbl">เกินกำหนด</div>
+      </div>
+      <div class="stat-card">
+        <div class="num num-yellow" id="stat-soon">0</div>
+        <div class="lbl">ใกล้ส่ง (3 วัน)</div>
+      </div>
+      <div class="stat-card">
+        <div class="num num-blue" id="stat-total">0</div>
+        <div class="lbl">งานทั้งหมด</div>
+      </div>
+    </div>
+
+    <!-- Admin toolbar -->
+    <div id="admin-toolbar">
+      <button class="btn-primary" onclick="openAddModal()">+ เพิ่มงาน</button>
+      <button class="btn-sm" onclick="openSubjectModal()">จัดการวิชา</button>
+    </div>
+
+    <!-- Subject tabs -->
+    <div class="tabs-wrap" id="tabs-wrap"></div>
+
+    <!-- Type filter -->
+    <div class="type-filter">
+      <button class="type-btn active-all" id="tf-all" onclick="setTypeFilter('all')">ทั้งหมด</button>
+      <button class="type-btn" id="tf-hw" onclick="setTypeFilter('hw')">การบ้าน</button>
+      <button class="type-btn" id="tf-class" onclick="setTypeFilter('class')">งานในคาบ</button>
+      <button class="type-btn" id="tf-deadline" onclick="setTypeFilter('deadline')">กำหนดส่ง</button>
+    </div>
+
+    <!-- List -->
+    <div class="assignments-grid" id="assignments-list"></div>
+  </div>
+</div>
+
+<!-- MODAL: Add/Edit -->
+<div class="modal-overlay" id="assignment-modal">
+  <div class="modal">
+    <h3 id="modal-title">เพิ่มงานใหม่</h3>
+    <div class="form-group">
+      <label>วิชา</label>
+      <select id="f-subject"></select>
+    </div>
+    <div class="form-group">
+      <label>ประเภท</label>
+      <select id="f-type">
+        <option value="hw">การบ้าน</option>
+        <option value="class">งานในคาบ</option>
+        <option value="deadline">กำหนดส่ง</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>ชื่องาน</label>
+      <input type="text" id="f-title" placeholder="เช่น รายงานกลุ่ม บทที่ 3">
+    </div>
+    <div class="form-group">
+      <label>รายละเอียด (ไม่บังคับ)</label>
+      <textarea id="f-desc" placeholder="รายละเอียดเพิ่มเติม..."></textarea>
+    </div>
+    <div class="form-group">
+      <label>วันที่ / กำหนดส่ง</label>
+      <input type="date" id="f-due">
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('assignment-modal')">ยกเลิก</button>
+      <button class="btn-save" onclick="saveAssignment()">บันทึก</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Admin Login -->
+<div class="modal-overlay" id="admin-modal">
+  <div class="modal" style="max-width:340px">
+    <h3>เข้าสู่โหมดแอดมิน</h3>
+    <div class="form-group">
+      <label>รหัสแอดมิน</label>
+      <input type="password" id="admin-pw-input" placeholder="ใส่รหัสแอดมิน" autocomplete="off">
+    </div>
+    <div class="login-error" id="admin-error">รหัสไม่ถูกต้อง</div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('admin-modal')">ยกเลิก</button>
+      <button class="btn-save" onclick="doAdminLogin()">เข้าสู่ระบบ</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Subjects -->
+<div class="modal-overlay" id="subject-modal">
+  <div class="modal">
+    <h3>จัดการวิชา</h3>
+    <div class="subject-chips" id="subject-chips"></div>
+    <div class="add-subject-row">
+      <input type="text" id="new-subject-input" placeholder="ชื่อวิชาใหม่" maxlength="40">
+      <button onclick="addSubject()">เพิ่ม</button>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-save" onclick="closeModal('subject-modal')">เสร็จแล้ว</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Confirm Delete -->
+<div class="modal-overlay" id="confirm-modal">
+  <div class="modal">
+    <h3>ลบงานนี้?</h3>
+    <p>การลบแล้วจะไม่สามารถกู้คืนได้</p>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('confirm-modal')">ยกเลิก</button>
+      <button class="btn-save" style="background:linear-gradient(135deg,#f87171,#ef4444)" onclick="confirmDelete()">ลบเลย</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast-container" id="toast-container"></div>
+
+<!-- FIREBASE: เชื่อมต่อ Realtime Database (เก็บข้อมูลบน cloud ให้ทุกคนเห็นเหมือนกัน) -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCkcNXpXV2JJk1hIomCfl-8zQmS5lXH_8Y",
+    authDomain: "all-tasks-cd02d.firebaseapp.com",
+    databaseURL: "https://all-tasks-cd02d-default-rtdb.firebaseio.com",
+    projectId: "all-tasks-cd02d",
+    storageBucket: "all-tasks-cd02d.firebasestorage.app",
+    messagingSenderId: "129149079934",
+    appId: "1:129149079934:web:19782ea3275c84aa39e32f",
+    measurementId: "G-LPBWPSZM0D"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  // เก็บข้อมูลทั้งหมดของแอปไว้ที่ path เดียว: homework_62/state
+  window._fb = {
+    set, onValue,
+    stateRef: ref(db, 'homework_62/state'),
+    connectedRef: ref(db, '.info/connected')
+  };
+</script>
+
+<script>
+const PASS = '6/2 Leamsing';
+const ADMIN_PASS = 'Watcharakorn';
+
+let state = {
+  subjects: ['คณิตศาสตร์', 'ภาษาไทย', 'วิทยาศาสตร์', 'ภาษาอังกฤษ', 'สังคมศึกษา'],
+  assignments: [
+    { id: 1, subject: 'คณิตศาสตร์', type: 'hw', title: 'แบบฝึกหัดหน้า 45–50', desc: 'ทำทุกข้อ', due: '2026-06-20' },
+    { id: 2, subject: 'ภาษาอังกฤษ', type: 'class', title: 'Reading Comprehension Unit 3', desc: '', due: '2026-06-18' },
+    { id: 3, subject: 'วิทยาศาสตร์', type: 'deadline', title: 'รายงานการทดลอง', desc: 'สรุปผลการทดลองเรื่องแรงและการเคลื่อนที่', due: '2026-06-25' },
+  ]
+};
+
+let isAdmin = false;
+let activeTab = 'all';
+let activeType = 'all';
+let editingId = null;
+let deletingId = null;
+
+// แสดงข้อความแจ้งเตือนเล็กๆ มุมจอ (toast)
+function showToast(msg, type) {
+  const container = document.getElementById('toast-container');
+  if (!container) return;
+  const t = document.createElement('div');
+  t.className = 'toast ' + (type || 'success');
+  t.textContent = msg;
+  container.appendChild(t);
+  setTimeout(() => t.remove(), 3000);
+}
+
+// บันทึก state ขึ้น Firebase ทุกครั้งที่มีการเปลี่ยนแปลง (แอดมินเพิ่ม/แก้/ลบงาน)
+function saveState() {
+  window._fb.set(window._fb.stateRef, state)
+    .then(() => showToast('บันทึกขึ้น cloud สำเร็จ ✓', 'success'))
+    .catch(err => {
+      showToast('บันทึกไม่สำเร็จ: ' + err.message, 'error');
+    });
+}
+
+// เริ่มฟัง Firebase แบบ real-time: ใครเปลี่ยนข้อมูล ทุกคนที่เปิดหน้านี้จะเห็นทันที
+let firebaseSyncStarted = false;
+function startFirebaseSync() {
+  if (firebaseSyncStarted) return;
+  firebaseSyncStarted = true;
+
+  window._fb.onValue(window._fb.stateRef, snapshot => {
+    const data = snapshot.val();
+    if (data && typeof data === 'object') {
+      // ป้องกัน error กรณี subjects/assignments หายไปจาก Firebase
+      // (เกิดขึ้นได้เมื่อ array ว่างถูกบันทึก แล้ว Firebase ตัด key นั้นทิ้ง)
+      state = {
+        subjects: Array.isArray(data.subjects) ? data.subjects : [],
+        assignments: Array.isArray(data.assignments) ? data.assignments : []
+      };
+    } else {
+      // ยังไม่มีข้อมูลบน cloud -> อัปโหลดข้อมูลตั้งต้นขึ้นไปครั้งแรก
+      window._fb.set(window._fb.stateRef, state);
+    }
+    renderTabs();
+    renderAssignments();
+    if (document.getElementById('subject-modal').classList.contains('open')) renderSubjectChips();
+  });
+
+  // แสดงสถานะออนไลน์/ออฟไลน์
+  window._fb.onValue(window._fb.connectedRef, snap => {
+    const badge = document.getElementById('sync-badge');
+    if (snap.val() === true) {
+      badge.textContent = '🟢 ออนไลน์ • ซิงค์ cloud';
+      badge.style.color = 'var(--green)';
+    } else {
+      badge.textContent = '🔴 ออฟไลน์ • รอเชื่อมต่อ';
+      badge.style.color = 'var(--red)';
+    }
+  });
+}
+
+// LOGIN
+function doLogin() {
+  const val = document.getElementById('login-input').value;
+  if (val === PASS) {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    initApp();
+  } else {
+    document.getElementById('login-error').style.display = 'block';
+    document.getElementById('login-input').value = '';
+    document.getElementById('login-input').focus();
+  }
+}
+
+document.getElementById('login-input').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+
+function logout() {
+  isAdmin = false;
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('login-input').value = '';
+  document.getElementById('login-error').style.display = 'none';
+  updateAdminUI();
+}
+
+// ADMIN
+function toggleAdminMode() {
+  if (isAdmin) {
+    isAdmin = false;
+    updateAdminUI();
+  } else {
+    document.getElementById('admin-pw-input').value = '';
+    document.getElementById('admin-error').style.display = 'none';
+    openModal('admin-modal');
+    setTimeout(() => document.getElementById('admin-pw-input').focus(), 100);
+  }
+}
+
+function doAdminLogin() {
+  const pw = document.getElementById('admin-pw-input').value;
+  if (pw === ADMIN_PASS) {
+    isAdmin = true;
+    closeModal('admin-modal');
+    updateAdminUI();
+  } else {
+    document.getElementById('admin-error').style.display = 'block';
+    document.getElementById('admin-pw-input').value = '';
+  }
+}
+
+function updateAdminUI() {
+  document.getElementById('admin-badge').style.display = isAdmin ? 'inline-flex' : 'none';
+  document.getElementById('admin-toggle-btn').textContent = isAdmin ? 'ออกจากแอดมิน' : 'เข้าโหมดแอดมิน';
+  document.getElementById('admin-toolbar').style.display = isAdmin ? 'flex' : 'none';
+  document.getElementById('app').classList.toggle('admin-mode', isAdmin);
+  renderAssignments();
+}
+
+// INIT
+function initApp() {
+  setGreeting();
+  renderTabs();
+  renderAssignments();
+  updateAdminUI();
+  startFirebaseSync();
+}
+
+function setGreeting() {
+  const now = new Date();
+  const h = now.getHours();
+  const greet = h < 12 ? 'อรุณสวัสดิ์' : h < 17 ? 'สวัสดีตอนบ่าย' : 'สวัสดีตอนเย็น';
+  document.getElementById('greeting').textContent = greet;
+  const days = ['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์'];
+  const months = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+  document.getElementById('date-display').textContent = `วัน${days[now.getDay()]}ที่ ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear() + 543}`;
+}
+
+// TYPE FILTER
+function setTypeFilter(type) {
+  activeType = type;
+  ['all','hw','class','deadline'].forEach(t => {
+    const btn = document.getElementById('tf-' + t);
+    btn.className = 'type-btn' + (t === type ? ' active-' + t : '');
+  });
+  renderAssignments();
+}
+
+// TABS
+function renderTabs() {
+  const wrap = document.getElementById('tabs-wrap');
+  wrap.innerHTML = '';
+
+  const all = document.createElement('button');
+  all.className = 'tab' + (activeTab === 'all' ? ' active' : '');
+  all.textContent = 'ทุกวิชา';
+  all.onclick = () => { activeTab = 'all'; renderTabs(); renderAssignments(); };
+  wrap.appendChild(all);
+
+  state.subjects.forEach(s => {
+    const t = document.createElement('button');
+    t.className = 'tab' + (activeTab === s ? ' active' : '');
+    t.textContent = s;
+    t.onclick = () => { activeTab = s; renderTabs(); renderAssignments(); };
+    wrap.appendChild(t);
+  });
+}
+
+// ASSIGNMENTS
+function getStatus(dueStr) {
+  const today = new Date(); today.setHours(0,0,0,0);
+  const due = new Date(dueStr); due.setHours(0,0,0,0);
+  const diff = Math.floor((due - today) / 86400000);
+  if (diff < 0) return { label: 'เกินกำหนดแล้ว', cls: 'badge-red', extra: 'overdue' };
+  if (diff === 0) return { label: 'วันนี้!', cls: 'badge-red', extra: 'soon' };
+  if (diff <= 3) return { label: `อีก ${diff} วัน`, cls: 'badge-yellow', extra: 'soon' };
+  return { label: `อีก ${diff} วัน`, cls: 'badge-green', extra: 'ok' };
+}
+
+function formatDate(dueStr) {
+  const d = new Date(dueStr);
+  const months = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+  return { day: d.getDate(), month: months[d.getMonth()] };
+}
+
+const TYPE_LABEL = { hw: 'การบ้าน', class: 'งานในคาบ', deadline: 'กำหนดส่ง' };
+const TYPE_TAG = { hw: 'tag-hw', class: 'tag-class', deadline: 'tag-deadline' };
+const TYPE_CARD = { hw: 'card-type-hw', class: 'card-type-class', deadline: 'card-type-deadline' };
+
+function renderAssignments() {
+  const list = document.getElementById('assignments-list');
+  let filtered = activeTab === 'all' ? [...state.assignments] : state.assignments.filter(a => a.subject === activeTab);
+  if (activeType !== 'all') filtered = filtered.filter(a => a.type === activeType);
+  filtered.sort((a, b) => new Date(a.due) - new Date(b.due));
+
+  // Stats (always from all assignments)
+  const today = new Date(); today.setHours(0,0,0,0);
+  let overdue = 0, soon = 0;
+  state.assignments.forEach(a => {
+    const due = new Date(a.due); due.setHours(0,0,0,0);
+    const diff = Math.floor((due - today) / 86400000);
+    if (diff < 0) overdue++;
+    else if (diff <= 3) soon++;
+  });
+  document.getElementById('stat-overdue').textContent = overdue;
+  document.getElementById('stat-soon').textContent = soon;
+  document.getElementById('stat-total').textContent = state.assignments.length;
+
+  if (filtered.length === 0) {
+    list.innerHTML = `<div class="empty-state"><div class="e-icon">—</div><h3>ไม่มีงานในหมวดนี้</h3><p>ยังไม่มีงานที่ตรงกับที่เลือก</p></div>`;
+    return;
+  }
+
+  list.innerHTML = filtered.map((a, i) => {
+    const st = getStatus(a.due);
+    const fd = formatDate(a.due);
+    const typeLabel = TYPE_LABEL[a.type] || a.type;
+    const typeTagCls = TYPE_TAG[a.type] || 'tag-hw';
+    const typeCardCls = TYPE_CARD[a.type] || 'card-type-hw';
+    return `
+      <div class="assignment-card ${typeCardCls} ${st.extra}" style="--i:${i}">
+        <div class="card-date">
+          <div class="month">${fd.month}</div>
+          <div class="day">${fd.day}</div>
+        </div>
+        <div class="card-body">
+          <div class="card-top">
+            <span class="card-subject">${a.subject}</span>
+            <span class="type-tag ${typeTagCls}">${typeLabel}</span>
+          </div>
+          <div class="card-title">${a.title}</div>
+          ${a.desc ? `<div class="card-desc">${a.desc}</div>` : ''}
+        </div>
+        <div class="card-meta">
+          <span class="deadline-badge ${st.cls}">${st.label}</span>
+          <div class="card-actions">
+            <button class="btn-icon" onclick="editAssignment(${a.id})">แก้ไข</button>
+            <button class="btn-icon delete" onclick="askDelete(${a.id})">ลบ</button>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+// ADD / EDIT
+function populateSubjectSelect() {
+  const sel = document.getElementById('f-subject');
+  sel.innerHTML = state.subjects.map(s => `<option value="${s}">${s}</option>`).join('');
+}
+
+function openAddModal() {
+  editingId = null;
+  document.getElementById('modal-title').textContent = 'เพิ่มงานใหม่';
+  populateSubjectSelect();
+  document.getElementById('f-type').value = 'hw';
+  document.getElementById('f-title').value = '';
+  document.getElementById('f-desc').value = '';
+  document.getElementById('f-due').value = '';
+  openModal('assignment-modal');
+}
+
+function editAssignment(id) {
+  const a = state.assignments.find(x => x.id === id);
+  if (!a) return;
+  editingId = id;
+  document.getElementById('modal-title').textContent = 'แก้ไขงาน';
+  populateSubjectSelect();
+  document.getElementById('f-subject').value = a.subject;
+  document.getElementById('f-type').value = a.type || 'hw';
+  document.getElementById('f-title').value = a.title;
+  document.getElementById('f-desc').value = a.desc;
+  document.getElementById('f-due').value = a.due;
+  openModal('assignment-modal');
+}
+
+function saveAssignment() {
+  const subject = document.getElementById('f-subject').value.trim();
+  const type = document.getElementById('f-type').value;
+  const title = document.getElementById('f-title').value.trim();
+  const desc = document.getElementById('f-desc').value.trim();
+  const due = document.getElementById('f-due').value;
+  if (!title || !due) { alert('กรุณากรอกชื่องานและวันที่'); return; }
+
+  if (editingId) {
+    const idx = state.assignments.findIndex(x => x.id === editingId);
+    if (idx !== -1) state.assignments[idx] = { id: editingId, subject, type, title, desc, due };
+  } else {
+    state.assignments.push({ id: Date.now(), subject, type, title, desc, due });
+  }
+  saveState();
+  closeModal('assignment-modal');
+  renderAssignments();
+}
+
+// DELETE
+function askDelete(id) { deletingId = id; openModal('confirm-modal'); }
+function confirmDelete() {
+  state.assignments = state.assignments.filter(a => a.id !== deletingId);
+  saveState();
+  closeModal('confirm-modal');
+  renderAssignments();
+}
+
+// SUBJECTS
+function openSubjectModal() { renderSubjectChips(); openModal('subject-modal'); }
+
+function renderSubjectChips() {
+  const wrap = document.getElementById('subject-chips');
+  if (!state.subjects.length) { wrap.innerHTML = '<span style="color:var(--muted);font-size:13px;">ยังไม่มีวิชา</span>'; return; }
+  wrap.innerHTML = state.subjects.map((s, i) => `
+    <div class="subject-chip">${s}<button onclick="removeSubject(${i})">×</button></div>`).join('');
+}
+
+function addSubject() {
+  const input = document.getElementById('new-subject-input');
+  const name = input.value.trim();
+  if (!name) return;
+  if (state.subjects.includes(name)) { alert('มีวิชานี้อยู่แล้ว'); return; }
+  state.subjects.push(name);
+  saveState();
+  input.value = '';
+  renderSubjectChips();
+  renderTabs();
+}
+
+document.getElementById('new-subject-input').addEventListener('keydown', e => { if (e.key === 'Enter') addSubject(); });
+
+function removeSubject(idx) {
+  const name = state.subjects[idx];
+  if (state.assignments.some(a => a.subject === name)) {
+    if (!confirm(`วิชา "${name}" มีงานอยู่ ต้องการลบวิชาและงานทั้งหมดในวิชานี้?`)) return;
+    state.assignments = state.assignments.filter(a => a.subject !== name);
+  }
+  state.subjects.splice(idx, 1);
+  saveState();
+  renderSubjectChips();
+  renderTabs();
+  if (activeTab === name) activeTab = 'all';
+  renderAssignments();
+}
+
+// MODAL HELPERS
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+document.querySelectorAll('.modal-overlay').forEach(o => {
+  o.addEventListener('click', e => { if (e.target === o) closeModal(o.id); });
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && document.getElementById('admin-modal').classList.contains('open')) doAdminLogin();
+  if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.open').forEach(m => closeModal(m.id));
+});
+</script>
+</body>
+</html>
