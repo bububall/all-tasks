@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>งานที่ต้องส่ง</title>
+<title>งานทั้งหมดของพวกลาบ</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Prompt:wght@400;600;700&display=swap');
 
@@ -682,8 +682,8 @@
 <!-- LOGIN -->
 <div id="login-screen">
   <div class="login-box">
-    <h1>งานที่ต้องส่ง</h1>
-    <div class="login-class">6/2 Leamsing</div>
+    <h1>งานของพวกลาบ</h1>
+    <div class="login-class">6/2 สมอง67</div>
     <div class="login-field">
       <input type="password" id="login-input" placeholder="รหัสผ่าน" autocomplete="off">
     </div>
@@ -695,18 +695,18 @@
 <!-- APP -->
 <div id="app">
   <div class="header">
-    <div class="header-logo">งานที่ต้องส่ง — 6/2 Leamsing</div>
+    <div class="header-logo">งานของพวกลาบ — 6/2 Leamsing</div>
     <div class="header-right">
       <span class="sync-badge" id="sync-badge">🔄 กำลังเชื่อมต่อ...</span>
       <span class="admin-badge" id="admin-badge">แอดมิน</span>
-      <button class="btn-sm" id="admin-toggle-btn" onclick="toggleAdminMode()">เข้าโหมดแอดมิน</button>
+      <button class="btn-sm" id="admin-toggle-btn" onclick="toggleAdminMode()">โหมดแอดมินอย่าเสือก</button>
       <button class="btn-sm" onclick="logout()">ออก</button>
     </div>
   </div>
 
   <div class="main">
     <div class="page-title">
-      <h2 id="greeting">สวัสดี</h2>
+      <h2 id="greeting"มอนิ่งไอ่พวกขี้เกียจ</h2>
       <p id="date-display"></p>
     </div>
 
@@ -1002,7 +1002,7 @@ function initApp() {
 function setGreeting() {
   const now = new Date();
   const h = now.getHours();
-  const greet = h < 12 ? 'อรุณสวัสดิ์' : h < 17 ? 'สวัสดีตอนบ่าย' : 'สวัสดีตอนเย็น';
+  const greet = h < 12 ? 'มอนิ่งไอ่พวกขี้เกียจ' : h < 17 ? 'บายละไมไม่เข้าเรียน' : 'เย็นละกลับบ่นได้ละอย่าแอบเที่ยว';
   document.getElementById('greeting').textContent = greet;
   const days = ['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์'];
   const months = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
@@ -1044,10 +1044,10 @@ function getStatus(dueStr) {
   const today = new Date(); today.setHours(0,0,0,0);
   const due = new Date(dueStr); due.setHours(0,0,0,0);
   const diff = Math.floor((due - today) / 86400000);
-  if (diff < 0) return { label: 'เกินกำหนดแล้ว', cls: 'badge-red', extra: 'overdue' };
-  if (diff === 0) return { label: 'วันนี้!', cls: 'badge-red', extra: 'soon' };
+  if (diff < 0) return { label: 'เกินกำหนดแล้วไอ่โง่', cls: 'badge-red', extra: 'overdue' };
+  if (diff === 0) return { label: 'ส่งวันนี้ไอ่ฟาย!', cls: 'badge-red', extra: 'soon' };
   if (diff <= 3) return { label: `อีก ${diff} วัน`, cls: 'badge-yellow', extra: 'soon' };
-  return { label: `อีก ${diff} วัน`, cls: 'badge-green', extra: 'ok' };
+  return { label: `อีก ${diff} วันนะไอ่ลาบ`, cls: 'badge-green', extra: 'ok' };
 }
 
 function formatDate(dueStr) {
