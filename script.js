@@ -319,10 +319,10 @@ function startFirebaseSync() {
   window._fb.onValue(window._fb.connectedRef, snap => {
     const badge = document.getElementById('sync-badge');
     if (snap.val() === true) {
-      badge.textContent = '🟢 ออนไลน์ • ซิงค์ cloud';
+      badge.textContent = 'ออนไลน์ • ซิงค์ cloud';
       badge.style.color = 'var(--green)';
     } else {
-      badge.textContent = '🔴 ออฟไลน์ • รอเชื่อมต่อ';
+      badge.textContent = 'ออฟไลน์ • รอเชื่อมต่อ';
       badge.style.color = 'var(--red)';
     }
   });
