@@ -325,10 +325,10 @@ function startFirebaseSync() {
   window._fb.onValue(window._fb.connectedRef, snap => {
     const badge = document.getElementById('sync-badge');
     if (snap.val() === true) {
-      badge.textContent = '🟢 ออนไลน์ • ซิงค์ cloud';
+      badge.textContent = 'ออนไลน์ • ซิงค์ cloud';
       badge.style.color = 'var(--green)';
     } else {
-      badge.textContent = '🔴 ออฟไลน์ • รอเชื่อมต่อ';
+      badge.textContent = 'ออฟไลน์ • รอเชื่อมต่อ';
       badge.style.color = 'var(--red)';
     }
   });
@@ -523,7 +523,7 @@ function doTeacherLogin() {
 function updateAdminUI() {
   document.getElementById('admin-badge').style.display = isAdmin ? 'inline-flex' : 'none';
   document.getElementById('teacher-badge').style.display = isTeacher ? 'inline-flex' : 'none';
-  document.getElementById('admin-toggle-btn').textContent = isAdmin ? 'ออกจากแอดมิน' : 'เข้าโหมดแอดมินอย่าเสือก';
+  document.getElementById('admin-toggle-btn').textContent = isAdmin ? 'ออกจากแอดมิน' : 'โหมดแอดมิน';
   document.getElementById('teacher-toggle-btn').textContent = isTeacher ? 'ออกจากโหมดอาจารย์' : 'โหมดอาจารย์';
   document.getElementById('admin-toolbar').style.display = (isAdmin || isTeacher) ? 'flex' : 'none';
   // แอดมินและอาจารย์จัดการงาน/วิชา/หมวดข้อมูลเพิ่มเติมได้เหมือนกันทุกอย่าง
