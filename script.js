@@ -1176,9 +1176,9 @@ function rosterCategoryLabel() { return (isAdmin || isTeacher) ? 'ข้อม�
 function renderMainViewSwitch() {
   const wrap = document.getElementById('main-view-switch');
   const views = [
-    { id: 'assignments', label: 'งาน', icon: '📋' },
-    { id: 'leaderboard', label: 'อันดับ', icon: '🏆' },
-    { id: 'roster', label: rosterCategoryLabel(), icon: '👥' }
+    { id: 'assignments', label: 'งาน' },
+    { id: 'leaderboard', label: 'อันดับ' },
+    { id: 'roster', label: rosterCategoryLabel() }
   ];
   const existing = Array.from(wrap.children);
 
@@ -1336,7 +1336,7 @@ function renderCustomFieldChips() {
     <div class="custom-field-chip">
       <span class="cfc-label">${escapeHtml(f.label)}</span>
       <button type="button" class="field-visibility-toggle ${f.private ? 'is-private' : 'is-public'}" onclick="toggleCustomFieldPrivate(${i})">
-        ${f.private ? '🔒 ส่วนตัว' : '👁 สาธารณะ'}
+        ${f.private ? 'ส่วนตัว' : 'สาธารณะ'}
       </button>
       <button class="cfc-del" onclick="removeCustomField(${i})">×</button>
     </div>`).join('');
