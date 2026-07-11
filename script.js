@@ -523,7 +523,7 @@ function doTeacherLogin() {
 function updateAdminUI() {
   document.getElementById('admin-badge').style.display = isAdmin ? 'inline-flex' : 'none';
   document.getElementById('teacher-badge').style.display = isTeacher ? 'inline-flex' : 'none';
-  document.getElementById('admin-toggle-btn').textContent = isAdmin ? 'ออกจากแอดมิน' : 'เข้าโหมดแอดมินอย่าเสือก';
+  document.getElementById('admin-toggle-btn').textContent = isAdmin ? 'ออกจากแอดมิน' : 'โหมดแอดมิน';
   document.getElementById('teacher-toggle-btn').textContent = isTeacher ? 'ออกจากโหมดอาจารย์' : 'โหมดอาจารย์';
   document.getElementById('admin-toolbar').style.display = (isAdmin || isTeacher) ? 'flex' : 'none';
   // แอดมินและอาจารย์จัดการงาน/วิชา/หมวดข้อมูลเพิ่มเติมได้เหมือนกันทุกอย่าง
